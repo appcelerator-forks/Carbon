@@ -300,8 +300,20 @@
         // TODO: Do something to somehow include a CommonJS module...
         
     } else {
-        NSString* name = [NSString stringWithFormat:@"create%@", key];
-        TiViewProxy * proxy = [self.uimodule createProxy:[NSArray arrayWithObject:params] forName:name context:self.executionContext];
+        NSString * name = [NSString stringWithFormat:@"create%@", key];
+        NSString * packageid = [params objectForKey:@"package"];
+
+        TiViewProxy * proxy;
+        if (!packageid) {
+            proxy = [self.uimodule createProxy:[NSArray arrayWithObject:params] forName:name context:self.executionContext];
+        }
+        else {
+            KrollBridge * bridge = (KrollBridge *)[self executionContext];
+            TiModule * module = [bridge require:[self executionContext] path:packageid];
+
+            NSLog(@"[INFO] Creating view proxy for module %@", NSStringFromClass([module class]));
+            proxy = [module createProxy:[NSArray arrayWithObject:params] forName:name context:self.executionContext];
+        }
         
         if (!proxy) {
             NSLog(@"[WARN] Cannot create object of type %@", key);
