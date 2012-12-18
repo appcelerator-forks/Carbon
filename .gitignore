@@ -7,3 +7,4 @@ com.appersonlabs.*
 *.xcodeproj/project.xcworkspace
 *.xcodeproj/xcuserdata
 build.properties
+*xcuserdata*
